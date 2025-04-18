@@ -81,3 +81,20 @@ h1 {
   font-size: 12px;
   cursor: pointer;
 }
+.gemini-section {
+    margin-bottom: 1.5rem;
+  }
+  .gemini-section input {
+    padding: 0.5rem;
+    width: 60%;
+    margin-right: 0.5rem;
+  }
+  .gemini-section button {
+    padding: 0.5rem 1rem;
+  }
+  #generate-status {
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 14px;
+  }
+  

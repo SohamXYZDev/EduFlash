@@ -3,6 +3,9 @@ const form = document.getElementById('flashcard-form');
 const questionInput = document.getElementById('question');
 const answerInput = document.getElementById('answer');
 const cardList = document.getElementById('card-list');
+const generateBtn = document.getElementById('generate-btn');
+const input = document.getElementById('generate-topic');
+const output = document.getElementById('generate-status');
 
 // Load from localStorage or initialize
 let flashcards = JSON.parse(localStorage.getItem('eduflash-cards')) || [];
@@ -41,7 +44,7 @@ function renderCards() {
   });
 }
 
-// Handle form submission
+// Handle form submission (manual card creation)
 form.addEventListener('submit', e => {
   e.preventDefault();
   const q = questionInput.value.trim();
@@ -51,6 +54,45 @@ form.addEventListener('submit', e => {
   saveCards();
   renderCards();
   form.reset();
+});
+
+// Handle auto-generation of flashcards
+generateBtn.addEventListener('click', async (e) => {
+  e.preventDefault();
+  const topic = input.value.trim();
+
+  if (!topic) return alert("Please enter a topic.");
+
+  output.innerHTML = "Generating flashcards...";
+
+  try {
+    const response = await fetch('http://localhost:3000/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ topic })
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      output.innerHTML = `❌ Error: ${data.error}`;
+      return;
+    }
+
+    // Add generated cards to the flashcards array
+    flashcards.push(...data);
+    saveCards();
+    renderCards();
+
+    // Clear input and output
+    input.value = '';
+    output.innerHTML = '✅ Flashcards generated successfully!';
+  } catch (err) {
+    console.error(err);
+    output.innerHTML = "❌ Something went wrong. Try again.";
+  }
 });
 
 // Initial render
